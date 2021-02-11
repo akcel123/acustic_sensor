@@ -14,10 +14,11 @@ extern "C" {
 #include "user_diskio.h" /* defines USER_Driver as external */
 #include "w25qxx.h"
 #include "w25qxxConf.h"
-#include "pdm_filter.h"
+#include "pdm2pcm_glo.h"
 //*******************************************************//
 //***********************DEFINES*************************//
 //*******************************************************//
+#define WAV_SIZE 96000
 #define I2S_SAMPLE_RATE (16000) //„астота дискритизации 16к√÷
 #define I2S_SAMPLE_BITS (16) //Ѕиты канала i2c 16-бит
 #define RECORD_TIME (10) //¬рем€ записи
@@ -44,8 +45,8 @@ GPIO_InitTypeDef spi_sd_gpio;
 GPIO_InitTypeDef spi_flash_gpio;
 SPI_HandleTypeDef spi1;
 Diskio_drvTypeDef  USER_Driver;
-TIM_HandleTypeDef htim4;
-static PDMFilter_InitStruct Filter;
+static PDM_Filter_Handler_t Filter_H;
+static PDM_Filter_Config_t Filter_C;
 //******************************************************//	
 //*********************VARIABLES************************//
 //******************************************************//
@@ -55,7 +56,6 @@ FATFS USERFatFS;    /* File system object for USER logical drive */
 FIL USERFile;       /* File object for USER */
 uint32_t byteswritten, bytesread;
 uint8_t result;
-extern char USER_Path[4]; /* logical drive path */
 FATFS SDFatFs;
 FATFS *fs;
 FIL MyFile;
